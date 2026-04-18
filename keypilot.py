@@ -177,22 +177,35 @@ def is_rofi_running():
     ) == 0
 
 
+import subprocess
+
+rofi_process = None
+
 def open_menu(options):
-    # If rofi already open → close it
-    if is_rofi_running():
-        subprocess.call(["pkill", "rofi"])
+    global rofi_process
+
+    # If rofi is already open → close it
+    if rofi_process and rofi_process.poll() is None:
+        rofi_process.terminate()
+        rofi_process = None
         return
 
     menu_text = "\n".join([opt["label"] for opt in options])
 
-    result = subprocess.run(
-        ["rofi", "-dmenu"],
-        input=menu_text,
-        text=True,
-        capture_output=True
+    rofi_process = subprocess.Popen(
+        ["rofi", "-dmenu", "-i", "-p", "KeyPilot", "-no-fixed-num-lines", "-kb-cancel", "Escape,MousePrimary"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        text=True
     )
 
-    choice = result.stdout.strip()
+    try:
+        out, _ = rofi_process.communicate(input=menu_text)
+        choice = out.strip()
+    except:
+        return
+
+    rofi_process = None
 
     for opt in options:
         if opt["label"] == choice:
