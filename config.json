@@ -1,0 +1,10 @@
+{
+    "KEY_F23": {
+      "type": "menu",
+      "options": [
+        { "label": "Terminal", "action": "terminal" },
+        { "label": "Browser", "action": "browser" },
+        { "label": "Shutdown", "action": "shutdown" }
+      ]
+    }
+  }
