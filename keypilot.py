@@ -167,7 +167,22 @@ def run_action(action):
         subprocess.Popen(["shutdown", "now"])
 
 
+import subprocess
+
+def is_rofi_running():
+    return subprocess.call(
+        ["pgrep", "-x", "rofi"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    ) == 0
+
+
 def open_menu(options):
+    # If rofi already open → close it
+    if is_rofi_running():
+        subprocess.call(["pkill", "rofi"])
+        return
+
     menu_text = "\n".join([opt["label"] for opt in options])
 
     result = subprocess.run(
