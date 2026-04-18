@@ -1,9 +1,8 @@
 # KeyPilot
 
-Turn your unused Copilot key into a powerful launcher on Linux.
+Turn your Copilot key into a customizable launcher on Linux.
 
-Instead of doing nothing, your Copilot key can now open apps, run commands, and act like a smart shortcut.
-
+Press → menu → run anything instantly.
 ---
 
 ## ✨ Features
@@ -15,6 +14,8 @@ Instead of doing nothing, your Copilot key can now open apps, run commands, and 
 - Works across different Linux setups  
 
 ---
+
+![demo](demo.gif)
 
 ## 🚀 Installation
 
