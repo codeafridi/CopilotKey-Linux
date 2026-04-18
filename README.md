@@ -8,11 +8,11 @@ Instead of doing nothing, your Copilot key can now open apps, run commands, and 
 
 ## ✨ Features
 
-- Press Copilot key → instantly open a menu
-- Launch apps, browser, or system actions
-- Fully customizable using a simple config file
-- Runs in the background automatically
-- Works across different Linux setups
+- Press Copilot key → instantly open a menu  
+- Launch apps, browser, or system actions  
+- Fully customizable using a simple config file  
+- Runs in the background automatically  
+- Works across different Linux setups  
 
 ---
 
@@ -22,26 +22,31 @@ Instead of doing nothing, your Copilot key can now open apps, run commands, and 
 git clone https://github.com/yourname/keypilot
 cd keypilot
 chmod +x install.sh
-./install.sh ```
+./install.sh
+```
 
-⚠️ After installation, log out and log back in (required for permissions).
+⚠️ After installation, **log out and log back in** (required for permissions).
+
+---
 
 ## 🎯 Usage
 
-Just press the Copilot key.
+Just press the **Copilot key**.
 
 A menu will appear where you can:
+- Open terminal  
+- Open browser  
+- Run custom actions  
 
-1. Open terminal
-2. Open browser
-3. Run custom actions
+---
 
 ## ⚙️ Customization
 
-Edit config.json to change what the key does.
+Edit `config.json` to change what the key does.
 
 Example:
-```bash
+
+```json
 {
   "KEY_F23": {
     "type": "menu",
@@ -50,20 +55,29 @@ Example:
       { "label": "Browser", "action": "browser" }
     ]
   }
-} ```
+}
+```
 
-You can add your own actions easily.
+---
 
 ## 📦 Requirements
-Linux (X11 session)
-Python 3
-rofi
+
+- Linux (X11 session)  
+- Python 3  
+- rofi  
+
+---
 
 ## ⚠️ Notes
-Uses low-level input (/dev/input) → permissions handled in install script
-Wayland support is limited (common Linux limitation)
-💡 Why this exists
+
+- Uses low-level input (`/dev/input`) → permissions handled in install script  
+- Wayland support is limited (common Linux limitation)  
+
+---
+
+## 💡 Why this exists
 
 On Linux, the Copilot key is useless.
 
 KeyPilot turns it into something actually useful.
+
