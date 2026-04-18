@@ -15,7 +15,7 @@ Press → menu → run anything instantly.
 
 ---
 
-![demo](demo.gif)
+![demo](demo.mp4)
 
 ## 🚀 Installation
 
