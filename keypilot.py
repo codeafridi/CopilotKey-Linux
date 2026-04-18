@@ -108,35 +108,77 @@ from evdev import InputDevice, categorize, ecodes
 import subprocess
 import shutil
 import json
-
 import evdev
+import argparse
+import logging
+import sys
 
-def find_keyboard():
+
+# ---------- LOGGING ----------
+logging.basicConfig(
+    level=logging.INFO,
+    format="[KeyPilot] %(message)s"
+)
+
+
+# ---------- CLI ----------
+parser = argparse.ArgumentParser()
+parser.add_argument("--device", help="Manually specify input device")
+args = parser.parse_args()
+
+
+# ---------- DEVICE DETECTION ----------
+def find_input_device():
     devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+
+    # Try finding KEY_F23 device
+    for dev in devices:
+        capabilities = dev.capabilities()
+
+        if ecodes.EV_KEY in capabilities:
+            if ecodes.KEY_F23 in capabilities[ecodes.EV_KEY]:
+                logging.info(f"Using F23 device: {dev.path} ({dev.name})")
+                return dev.path
+
+    # Fallback: first keyboard-like device
     for dev in devices:
         if "keyboard" in dev.name.lower():
+            logging.warning(f"F23 not found, falling back to: {dev.path} ({dev.name})")
             return dev.path
+
     return None
 
-DEVICE = find_keyboard()
+
+DEVICE = args.device if args.device else find_input_device()
 
 if not DEVICE:
-    print("No keyboard found")
-    exit(1)
+    logging.error("No suitable input device found")
+    sys.exit(1)
 
 dev = InputDevice(DEVICE)
+logging.info("Listening...")
 
-print("Listening...")
 
-
+# ---------- CONFIG ----------
 def load_config():
-    with open("config.json") as f:
-        return json.load(f)
+    try:
+        with open("config.json") as f:
+            return json.load(f)
+    except Exception as e:
+        logging.error(f"Failed to load config: {e}")
+        sys.exit(1)
 
 
 config = load_config()
 
 
+# ---------- DEPENDENCIES ----------
+if not shutil.which("rofi"):
+    logging.error("rofi not installed")
+    sys.exit(1)
+
+
+# ---------- ACTIONS ----------
 def open_terminal():
     terminals = [
         "gnome-terminal",
@@ -153,9 +195,7 @@ def open_terminal():
             subprocess.Popen([term])
             return
 
-    print("No working terminal found.")
-    print("Try installing one: sudo apt install gnome-terminal or xterm")
-    print("If GNOME Terminal fails, run: sudo apt install dbus-x11")
+    logging.error("No terminal found. Install one (gnome-terminal, xterm, etc.)")
 
 
 def run_action(action):
@@ -164,35 +204,25 @@ def run_action(action):
     elif action == "browser":
         subprocess.Popen(["xdg-open", "https://google.com"])
     elif action == "shutdown":
-        subprocess.Popen(["shutdown", "now"])
+        subprocess.Popen(["systemctl", "poweroff"])
 
 
-import subprocess
-
-def is_rofi_running():
-    return subprocess.call(
-        ["pgrep", "-x", "rofi"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    ) == 0
-
-
-import subprocess
-
+# ---------- MENU ----------
 rofi_process = None
+current_options = None
 
-rofi_process = None
 
 def open_menu(options):
-    global rofi_process
+    global rofi_process, current_options
 
-    # If already open → close
+    # Toggle behavior
     if rofi_process and rofi_process.poll() is None:
         rofi_process.terminate()
         rofi_process = None
         return
 
     menu_text = "\n".join([opt["label"] for opt in options])
+    current_options = options
 
     rofi_process = subprocess.Popen(
         ["rofi", "-dmenu", "-i", "-p", "KeyPilot"],
@@ -204,35 +234,36 @@ def open_menu(options):
     rofi_process.stdin.write(menu_text)
     rofi_process.stdin.close()
 
-    
 
-
+# ---------- MAIN LOOP ----------
 for event in dev.read_loop():
 
-    if event.type == ecodes.EV_KEY:
-        key = categorize(event)
+    try:
+        if event.type == ecodes.EV_KEY:
+            key = categorize(event)
 
-        if key.keystate == key.key_down:
-            keycode = key.keycode
+            if key.keystate == key.key_down:
+                keycode = key.keycode
 
-            if isinstance(keycode, list):
-                keycode = keycode[0]
+                if isinstance(keycode, list):
+                    keycode = keycode[0]
 
-            if keycode in config:
-                action = config[keycode]
+                if keycode in config:
+                    action = config[keycode]
 
-                if action["type"] == "menu":
-                    open_menu(action["options"])
+                    if action.get("type") == "menu":
+                        open_menu(action.get("options", []))
 
+        # Handle rofi output
+        if rofi_process and rofi_process.poll() is not None:
+            output = rofi_process.stdout.read().strip() if rofi_process.stdout else ""
+            rofi_process = None
 
-    if rofi_process and rofi_process.poll() is not None:
-        output = rofi_process.stdout.read().strip()
-        rofi_process = None
+            if output and current_options:
+                for opt in current_options:
+                    if opt["label"] == output:
+                        run_action(opt["action"])
+                        break
 
-        if "KEY_F23" in config:
-            options = config["KEY_F23"]["options"]
-
-            for opt in options:
-                if opt["label"] == output:
-                    run_action(opt["action"])
-                    break
+    except Exception as e:
+        logging.error(f"Runtime error: {e}")
