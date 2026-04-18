@@ -181,10 +181,12 @@ import subprocess
 
 rofi_process = None
 
+rofi_process = None
+
 def open_menu(options):
     global rofi_process
 
-    # If rofi is already open → close it
+    # If already open → close
     if rofi_process and rofi_process.poll() is None:
         rofi_process.terminate()
         rofi_process = None
@@ -193,27 +195,20 @@ def open_menu(options):
     menu_text = "\n".join([opt["label"] for opt in options])
 
     rofi_process = subprocess.Popen(
-        ["rofi", "-dmenu", "-i", "-p", "KeyPilot", "-no-fixed-num-lines", "-kb-cancel", "Escape,MousePrimary"],
+        ["rofi", "-dmenu", "-i", "-p", "KeyPilot"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         text=True
     )
 
-    try:
-        out, _ = rofi_process.communicate(input=menu_text)
-        choice = out.strip()
-    except:
-        return
+    rofi_process.stdin.write(menu_text)
+    rofi_process.stdin.close()
 
-    rofi_process = None
-
-    for opt in options:
-        if opt["label"] == choice:
-            run_action(opt["action"])
-            break
+    
 
 
 for event in dev.read_loop():
+
     if event.type == ecodes.EV_KEY:
         key = categorize(event)
 
@@ -228,3 +223,16 @@ for event in dev.read_loop():
 
                 if action["type"] == "menu":
                     open_menu(action["options"])
+
+
+    if rofi_process and rofi_process.poll() is not None:
+        output = rofi_process.stdout.read().strip()
+        rofi_process = None
+
+        if "KEY_F23" in config:
+            options = config["KEY_F23"]["options"]
+
+            for opt in options:
+                if opt["label"] == output:
+                    run_action(opt["action"])
+                    break
