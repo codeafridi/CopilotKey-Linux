@@ -1,28 +1,32 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -e 
 
 echo "Installing KeyPilot..."
 
-# Install dependencies
+# Install system dependencies
 sudo apt update
 sudo apt install -y python3-pip rofi
 
-pip install -r requirements.txt
+# Install python dependency
+python3 -m pip install --user -r requirements.txt || python3 -m pip install --break-system-packages -r requirements.txt
 
-# Permissions
-sudo usermod -aG input $USER
+# Add user to input group
+sudo usermod -aG input "$USER"
 
-# Udev rule
+# Create udev rule
 echo 'KERNEL=="event*", GROUP="input", MODE="0660"' | sudo tee /etc/udev/rules.d/99-keypilot.rules
 
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
-# Setup systemd
+# Setup systemd user service
 mkdir -p ~/.config/systemd/user
 cp keypilot.service ~/.config/systemd/user/
 
 systemctl --user daemon-reload
 systemctl --user enable keypilot
+systemctl --user start keypilot
 
-echo "Done."
-echo "⚠️ Log out and log back in"
+echo "Installation complete."
+echo "⚠️ You MUST log out and log back in for permissions to apply."
