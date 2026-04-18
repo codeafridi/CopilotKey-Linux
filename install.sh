@@ -22,7 +22,7 @@ sudo udevadm trigger
 
 # Setup systemd user service
 mkdir -p ~/.config/systemd/user
-cp keypilot.service ~/.config/systemd/user/
+sed "s|%h/keypilot|$PWD|g" keypilot.service > ~/.config/systemd/user/keypilot.service
 
 systemctl --user daemon-reload
 systemctl --user enable keypilot
