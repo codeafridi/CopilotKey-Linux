@@ -5,7 +5,7 @@ Turn your Copilot key into a customizable launcher on Linux.
 Press → menu → run anything instantly.
 ---
 
-## ✨ Features
+##  Features
 
 - Press Copilot key → instantly open a menu  
 - Launch apps, browser, or system actions  
@@ -15,9 +15,7 @@ Press → menu → run anything instantly.
 
 ---
 
-![demo](demo.gif)
-
-## 🚀 Installation
+##  Installation
 
 ```bash
 git clone https://github.com/yourname/keypilot
@@ -30,7 +28,7 @@ chmod +x install.sh
 
 ---
 
-## 🎯 Usage
+## Usage
 
 Just press the **Copilot key**.
 
@@ -41,7 +39,7 @@ A menu will appear where you can:
 
 ---
 
-## ⚙️ Customization
+## Customization
 
 Edit `config.json` to change what the key does.
 
@@ -58,7 +56,7 @@ Example:
   }
 }
 ```
-## ➕ Adding More Menu Options
+## Adding More Menu Options
 
 You can add as many options as you want to the menu.
 
@@ -79,13 +77,13 @@ Just edit `config.json` and add more items inside the `options` list.
   }
 }
 ```
-### ⚠️ Important
+### Important
 
 If you add a new action in `config.json`, you also need to add it in the code.
 
 Open `keypilot.py` and find the `run_action()` function.
 
-### ⚙️ Actions Guide (Apps, Websites, Files, System Commands)
+### Actions Guide (Apps, Websites, Files, System Commands)
 
 Every action is executed using:
 
@@ -93,12 +91,9 @@ Every action is executed using:
 subprocess.Popen(["command", "arg1", "arg2"])
 ```
 
-👉 Always use a **list** (square brackets).  
-👉 First item = command, rest = arguments.
-
 ---
 
-## 🧠 Quick Rules
+##  Quick Rules
 
 - **App** → `["app-name"]`
 - **Website** → `["xdg-open", "https://..."]`
@@ -108,7 +103,7 @@ subprocess.Popen(["command", "arg1", "arg2"])
 
 ---
 
-## 📊 Common Examples
+## Common Examples
 
 | Category     | What you want to do         | Example code |
 |--------------|----------------------------|--------------|
@@ -131,7 +126,7 @@ subprocess.Popen(["command", "arg1", "arg2"])
 
 ---
 
-## 🛠 Example in `run_action()`
+## Example in `run_action()`
 
 ```python
 def run_action(action):
@@ -147,7 +142,7 @@ def run_action(action):
 
 ---
 
-## ⚠️ Important
+##  Important
 
 - Always use `["command", "arg"]` format  
 - Do NOT write commands as a single string  
@@ -155,12 +150,12 @@ def run_action(action):
 
 ---
 
-That’s it. you can launch anything.
+Thats it. you can launch anything.
 At last run the file again ```./install.sh ```
 
 ---
 
-## 📦 Requirements
+## Requirements
 
 - Linux (X11 session)  
 - Python 3  
@@ -168,17 +163,17 @@ At last run the file again ```./install.sh ```
 
 ---
 
-## ⚠️ Notes
+## Notes
 
 - Uses low-level input (`/dev/input`) → permissions handled in install script  
 - Wayland support is limited (common Linux limitation)  
 
 ---
 
-## 💡 Why this exists
+## Why this exists
 
 On Linux, the Copilot key is useless.
 
 KeyPilot turns it into something actually useful.
 
-⚠️ Works best on X11. Wayland support may be limited.
+Works best on X11. Wayland support may be limited.
