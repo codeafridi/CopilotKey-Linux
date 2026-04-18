@@ -24,7 +24,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-⚠️ After installation, **log out and log back in** (required for permissions).
+ After installation, **log out and log back in** (required for permissions).
 
 ---
 
