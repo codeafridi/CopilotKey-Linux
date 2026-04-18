@@ -9,7 +9,8 @@
         { "label": "Gmail", "action": "gmail" },
         { "label": "GitHub", "action": "github" },
         { "label": "ChatGPT", "action": "chatgpt" },
-        { "label": "VS Code", "action": "code" }
+        { "label": "VS Code", "action": "code" },
+        { "label": "CSES-problemset", "action": "cses-problemset" }
       ]
     }
   }
