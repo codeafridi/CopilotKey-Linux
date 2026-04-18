@@ -156,7 +156,7 @@ def run_action(action):
 ---
 
 That’s it. you can launch anything.
-At last run the file again ```bash ./install.sh ```
+At last run the file again ```./install.sh ```
 
 ---
 
