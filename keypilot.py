@@ -205,6 +205,17 @@ def run_action(action):
         subprocess.Popen(["xdg-open", "https://google.com"])
     elif action == "shutdown":
         subprocess.Popen(["systemctl", "poweroff"])
+    elif action == "codeforces":
+         subprocess.Popen(["xdg-open", "https://codeforces.com/problemset"])
+
+    elif action == "gmail":
+         subprocess.Popen(["xdg-open", "https://mail.google.com"])
+
+    elif action == "github":
+         subprocess.Popen(["xdg-open", "https://github.com/codeafridi"])
+
+    elif action == "chatgpt":
+         subprocess.Popen(["xdg-open", "https://chat.openai.com"])
 
 
 # ---------- MENU ----------

@@ -4,7 +4,12 @@
       "options": [
         { "label": "Terminal", "action": "terminal" },
         { "label": "Browser", "action": "browser" },
-        { "label": "Shutdown", "action": "shutdown" }
+        { "label": "Shutdown", "action": "shutdown" },
+        { "label": "Codeforces", "action": "codeforces" },
+        { "label": "Gmail", "action": "gmail" },
+        { "label": "GitHub", "action": "github" },
+        { "label": "ChatGPT", "action": "chatgpt" },
+        { "label": "VS Code", "action": "code" }
       ]
     }
   }
