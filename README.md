@@ -81,3 +81,4 @@ On Linux, the Copilot key is useless.
 
 KeyPilot turns it into something actually useful.
 
+⚠️ Works best on X11. Wayland support may be limited.
