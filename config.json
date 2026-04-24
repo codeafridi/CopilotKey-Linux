@@ -7,7 +7,7 @@
         { "label": "Shutdown", "action": "shutdown" },
         { "label": "Introductory Combinatorics", "action": "combinatorics" },
         { "label": "CSES", "action": "cses" },
-        { "label": "Files", "action": "files" },
+        { "label": "Competitive Programming", "action": "competitive_programming" },
         { "label": "Files", "action": "files" },
         { "label": "Files", "action": "files" },
         { "label": "Codeforces", "action": "codeforces" },

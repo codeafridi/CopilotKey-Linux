@@ -209,6 +209,8 @@ def run_action(action):
         subprocess.Popen(["xdg-open", "/home/afridi/Downloads/Introductory Combinatorics.pdf"])
     elif action == "cses":
         subprocess.Popen(["xdg-open", "/home/afridi/Downloads/CSES.pdf"])
+    elif action == "competitive_programming":
+        subprocess.Popen(["xdg-open", "/home/afridi/Downloads/_OceanofPDF.com_Guide_to_Competitive_Programming_-_Antti_Laaksonen.pdf"])
     elif action == "codeforces":
          subprocess.Popen(["xdg-open", "https://codeforces.com/problemset"])
     elif action == "cses-problemset":
