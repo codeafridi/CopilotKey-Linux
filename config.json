@@ -5,7 +5,7 @@
         { "label": "Terminal", "action": "terminal" },
         { "label": "Browser", "action": "browser" },
         { "label": "Shutdown", "action": "shutdown" },
-        { "label": "Combinatorics", "action": "combinatorics" },
+        { "label": "Introductory Combinatorics", "action": "combinatorics" },
         { "label": "CSES", "action": "cses" },
         { "label": "Files", "action": "files" },
         { "label": "Files", "action": "files" },
