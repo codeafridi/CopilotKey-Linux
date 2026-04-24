@@ -205,6 +205,7 @@ def run_action(action):
         subprocess.Popen(["xdg-open", "https://google.com"])
     elif action == "shutdown":
         subprocess.Popen(["systemctl", "poweroff"])
+    elif action 
     elif action == "codeforces":
          subprocess.Popen(["xdg-open", "https://codeforces.com/problemset"])
     elif action == "cses-problemset":
