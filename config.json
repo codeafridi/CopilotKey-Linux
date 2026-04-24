@@ -6,7 +6,7 @@
         { "label": "Browser", "action": "browser" },
         { "label": "Shutdown", "action": "shutdown" },
         { "label": "Combinatorics", "action": "combinatorics" },
-        { "label": "Files", "action": "files" },
+        { "label": "CSES", "action": "cses" },
         { "label": "Files", "action": "files" },
         { "label": "Files", "action": "files" },
         { "label": "Files", "action": "files" },
