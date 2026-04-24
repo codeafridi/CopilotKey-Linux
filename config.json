@@ -5,7 +5,7 @@
         { "label": "Terminal", "action": "terminal" },
         { "label": "Browser", "action": "browser" },
         { "label": "Shutdown", "action": "shutdown" },
-        { "label": "Files", "action": "files" },
+        { "label": "Combinatorics", "action": "combinatorics" },
         { "label": "Files", "action": "files" },
         { "label": "Files", "action": "files" },
         { "label": "Files", "action": "files" },
