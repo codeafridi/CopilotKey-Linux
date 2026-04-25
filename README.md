@@ -5,6 +5,8 @@ Turn your Copilot key into a customizable launcher on Linux.
 Press → menu → run anything instantly.
 ---
 
+<img width="1488" height="656" alt="image" src="https://github.com/user-attachments/assets/2eac6d8d-46c6-4262-9c26-d98f351b4c49" />
+
 ##  Features
 
 - Press Copilot key → instantly open a menu  
