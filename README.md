@@ -7,6 +7,8 @@ Press → menu → run anything instantly.
 
 <img width="1488" height="656" alt="image" src="https://github.com/user-attachments/assets/2eac6d8d-46c6-4262-9c26-d98f351b4c49" />
 
+here are the pdfs repo for CP - [My CP Notes Repo](https://github.com/codeafridi/Competitive-programming-notes)
+
 ##  Features
 
 - Press Copilot key → instantly open a menu  
