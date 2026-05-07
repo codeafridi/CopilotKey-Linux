@@ -177,7 +177,7 @@ config = load_config()
 # ---------- DEPENDENCIES ----------
 def find_menu_launcher():
     launchers = [
-        ("rofi-wayland", ["rofi", "-dmenu", "-i", "-p", "KeyPilot"]),
+        ("rofi-wayland", ["rofi-wayland", "-dmenu", "-i", "-p", "KeyPilot"]),
         ("wofi", ["wofi", "--dmenu", "--prompt", "KeyPilot"]),
         ("fuzzel", ["fuzzel", "--dmenu", "--prompt", "KeyPilot> "]),
         ("rofi", ["rofi", "-dmenu", "-i", "-p", "KeyPilot"]),
