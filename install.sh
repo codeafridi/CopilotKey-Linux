@@ -12,10 +12,12 @@ fi
 
 # Install system dependencies
 sudo apt update
-sudo apt install -y python3-pip rofi
+sudo apt install -y python3-pip python3-venv
+sudo apt install -y rofi-wayland || sudo apt install -y rofi
 
 # Install python dependency
-python3 -m pip install --user -r requirements.txt || python3 -m pip install --break-system-packages -r requirements.txt
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
 
 # Add user to input group
 sudo usermod -aG input "$USER"
@@ -30,6 +32,7 @@ sudo udevadm trigger
 mkdir -p ~/.config/systemd/user
 sed "s|%h/keypilot|$PWD|g" keypilot.service > ~/.config/systemd/user/keypilot.service
 
+systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS XDG_CURRENT_DESKTOP XDG_SESSION_TYPE PATH || true
 systemctl --user daemon-reload
 systemctl --user enable keypilot
 

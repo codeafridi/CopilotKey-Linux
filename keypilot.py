@@ -111,7 +111,9 @@ import json
 import evdev
 import argparse
 import logging
+import os
 import sys
+import threading
 
 
 # ---------- LOGGING ----------
@@ -173,9 +175,28 @@ config = load_config()
 
 
 # ---------- DEPENDENCIES ----------
-if not shutil.which("rofi"):
-    logging.error("rofi not installed")
+def find_menu_launcher():
+    launchers = [
+        ("rofi-wayland", ["rofi", "-dmenu", "-i", "-p", "KeyPilot"]),
+        ("wofi", ["wofi", "--dmenu", "--prompt", "KeyPilot"]),
+        ("fuzzel", ["fuzzel", "--dmenu", "--prompt", "KeyPilot> "]),
+        ("rofi", ["rofi", "-dmenu", "-i", "-p", "KeyPilot"]),
+    ]
+
+    for binary, command in launchers:
+        if shutil.which(binary):
+            return binary, command
+
+    return None, None
+
+
+MENU_LAUNCHER, MENU_COMMAND = find_menu_launcher()
+
+if not MENU_COMMAND:
+    logging.error("No menu launcher found. Install rofi-wayland, wofi, fuzzel, or rofi")
     sys.exit(1)
+
+logging.info(f"Using menu launcher: {MENU_LAUNCHER}")
 
 
 # ---------- ACTIONS ----------
@@ -230,31 +251,73 @@ def run_action(action):
 
 
 # ---------- MENU ----------
-rofi_process = None
+menu_process = None
 current_options = None
+menu_lock = threading.Lock()
+
+
+def launcher_env():
+    env = os.environ.copy()
+    uid = os.getuid()
+    env.setdefault("XDG_RUNTIME_DIR", f"/run/user/{uid}")
+    env.setdefault("DBUS_SESSION_BUS_ADDRESS", f"unix:path=/run/user/{uid}/bus")
+    env.setdefault("WAYLAND_DISPLAY", "wayland-0")
+    env.setdefault("DISPLAY", ":0")
+    return env
+
+
+def handle_menu_output(process, options):
+    global menu_process
+
+    stdout, stderr = process.communicate()
+
+    with menu_lock:
+        if menu_process is process:
+            menu_process = None
+
+    if process.returncode not in (0, 1):
+        error = stderr.strip() if stderr else f"exit code {process.returncode}"
+        logging.error(f"{MENU_LAUNCHER} failed: {error}")
+        return
+
+    choice = stdout.strip() if stdout else ""
+
+    if choice:
+        for opt in options:
+            if opt["label"] == choice:
+                run_action(opt["action"])
+                break
 
 
 def open_menu(options):
-    global rofi_process, current_options
+    global menu_process, current_options
 
-    # Toggle behavior
-    if rofi_process and rofi_process.poll() is None:
-        rofi_process.terminate()
-        rofi_process = None
-        return
+    with menu_lock:
+        # Toggle behavior
+        if menu_process and menu_process.poll() is None:
+            menu_process.terminate()
+            menu_process = None
+            return
 
-    menu_text = "\n".join([opt["label"] for opt in options])
-    current_options = options
+        menu_text = "\n".join([opt["label"] for opt in options])
+        current_options = options
 
-    rofi_process = subprocess.Popen(
-        ["rofi", "-dmenu", "-i", "-p", "KeyPilot"],
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        text=True
-    )
+        menu_process = subprocess.Popen(
+            MENU_COMMAND,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=launcher_env()
+        )
 
-    rofi_process.stdin.write(menu_text)
-    rofi_process.stdin.close()
+        menu_process.stdin.write(menu_text)
+        menu_process.stdin.close()
+        threading.Thread(
+            target=handle_menu_output,
+            args=(menu_process, options),
+            daemon=True
+        ).start()
 
 
 # ---------- MAIN LOOP ----------
@@ -275,17 +338,6 @@ for event in dev.read_loop():
 
                     if action.get("type") == "menu":
                         open_menu(action.get("options", []))
-
-        # Handle rofi output
-        if rofi_process and rofi_process.poll() is not None:
-            output = rofi_process.stdout.read().strip() if rofi_process.stdout else ""
-            rofi_process = None
-
-            if output and current_options:
-                for opt in current_options:
-                    if opt["label"] == output:
-                        run_action(opt["action"])
-                        break
 
     except Exception as e:
         logging.error(f"Runtime error: {e}")

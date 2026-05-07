@@ -4,12 +4,13 @@ After=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 %h/keypilot/keypilot.py
+ExecStart=%h/keypilot/.venv/bin/python %h/keypilot/keypilot.py
 WorkingDirectory=%h/keypilot
 Restart=always
 RestartSec=2
-Environment=DISPLAY=:0
-Environment=XAUTHORITY=%h/.Xauthority
+Environment=XDG_RUNTIME_DIR=%t
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=%t/bus
+Environment=PYTHONUNBUFFERED=1
 
 [Install]
 WantedBy=default.target
