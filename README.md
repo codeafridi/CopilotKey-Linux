@@ -28,7 +28,26 @@ chmod +x install.sh
 ./install.sh
 ```
 
- After installation, **log out and log back in** (required for permissions).
+Run the script as your normal user, not with `sudo`. It will ask for sudo only
+when it needs to install packages or update input-device permissions.
+
+The installer:
+
+- installs Python/system dependencies
+- creates a local `.venv`
+- installs Python packages into that `.venv`
+- installs a menu launcher (`rofi-wayland` when available, otherwise `rofi`)
+- adds your user to the `input` group
+- enables the `keypilot` user service
+
+After installation, **log out and log back in** or reboot. This is required so
+Linux applies the new `input` group permission to your desktop session.
+
+Then start/restart KeyPilot:
+
+```bash
+systemctl --user restart keypilot
+```
 
 ---
 
@@ -40,6 +59,18 @@ A menu will appear where you can:
 - Open terminal  
 - Open browser  
 - Run custom actions  
+
+To check whether the background service is running:
+
+```bash
+systemctl --user status keypilot
+```
+
+To watch logs while pressing the Copilot key:
+
+```bash
+journalctl --user -u keypilot -f
+```
 
 ---
 
@@ -155,22 +186,85 @@ def run_action(action):
 ---
 
 Thats it. you can launch anything.
-At last run the file again ```./install.sh ```
+After changing the service file or reinstalling dependencies, run:
+
+```bash
+./install.sh
+systemctl --user restart keypilot
+```
 
 ---
 
 ## Requirements
 
-- Linux (X11 session)  
-- Python 3  
-- rofi  
+- Linux
+- Python 3
+- `python3-venv`
+- one supported menu launcher:
+  - `rofi-wayland` recommended for Wayland
+  - `wofi`
+  - `fuzzel`
+  - `rofi` for X11
 
 ---
 
 ## Notes
 
 - Uses low-level input (`/dev/input`) → permissions handled in install script  
-- Wayland support is limited (common Linux limitation)  
+- The installer uses a local `.venv`, so it avoids Python's
+  `externally-managed-environment` / PEP 668 error.
+- KeyPilot tries menu launchers in this order: `rofi-wayland`, `wofi`,
+  `fuzzel`, then `rofi`.
+- On GNOME Wayland, classic `/usr/bin/rofi` may crash. Install `rofi-wayland`
+  or `wofi`, then restart the service.
+
+---
+
+## Troubleshooting
+
+### Service says "No suitable input device found"
+
+Check your active groups:
+
+```bash
+id -nG | grep -w input
+```
+
+If nothing prints, log out completely and log back in, or reboot. Then run:
+
+```bash
+systemctl --user reset-failed keypilot
+systemctl --user restart keypilot
+journalctl --user -u keypilot -n 30 --no-pager
+```
+
+When it works, the logs should contain something like:
+
+```text
+[KeyPilot] Using F23 device: /dev/input/event3 (...)
+[KeyPilot] Listening...
+```
+
+### Ubuntu reports that rofi crashed
+
+If you see an Ubuntu crash dialog for `/usr/bin/rofi`, install a Wayland-friendly
+launcher:
+
+```bash
+sudo apt install rofi-wayland
+```
+
+If that package is not available:
+
+```bash
+sudo apt install wofi
+```
+
+Then restart KeyPilot:
+
+```bash
+systemctl --user restart keypilot
+```
 
 ---
 
@@ -180,4 +274,5 @@ On Linux, the Copilot key is useless.
 
 KeyPilot turns it into something actually useful.
 
-Works best on X11. Wayland support may be limited.
+Works on X11 and can work on Wayland when a Wayland-friendly menu launcher is
+installed.
