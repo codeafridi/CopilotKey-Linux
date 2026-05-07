@@ -225,6 +225,8 @@ def run_action(action):
 
     elif action == "chatgpt":
          subprocess.Popen(["xdg-open", "https://chat.openai.com"])
+    elif action == "code":
+         subprocess.Popen(["code"])
 
 
 # ---------- MENU ----------
