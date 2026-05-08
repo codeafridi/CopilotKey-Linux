@@ -4,8 +4,7 @@ After=graphical-session.target
 
 [Service]
 Type=simple
-ExecStart=%h/keypilot/.venv/bin/python %h/keypilot/keypilot.py --config %h/.config/keypilot/config.json
-WorkingDirectory=%h/keypilot
+ExecStart=/usr/bin/keypilot
 Restart=always
 RestartSec=2
 Environment=XDG_RUNTIME_DIR=%t

@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+set -e
+
+cat <<'MSG'
+KeyPilot is installed.
+
+To use it:
+  sudo usermod -aG input "$USER"
+  log out and log back in
+  systemctl --user daemon-reload
+  systemctl --user enable --now keypilot
+
+Edit your menu at:
+  ~/.config/keypilot/config.json
+
+If that file does not exist, copy the default:
+  mkdir -p ~/.config/keypilot
+  cp /etc/keypilot/config.json ~/.config/keypilot/config.json
+MSG
+
+exit 0

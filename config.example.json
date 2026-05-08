@@ -11,12 +11,12 @@
         "action": "browser"
       },
       {
-        "label": "Files",
-        "command": ["xdg-open", "/home"]
+        "label": "GitHub",
+        "command": ["xdg-open", "https://github.com"]
       },
       {
-        "label": "Ubuntu Settings",
-        "command": ["gnome-control-center"]
+        "label": "VS Code",
+        "command": ["code"]
       }
     ]
   }

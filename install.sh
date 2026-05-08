@@ -19,6 +19,12 @@ sudo apt install -y rofi-wayland || sudo apt install -y rofi
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 
+# Install user config without overwriting local changes
+mkdir -p ~/.config/keypilot
+if [ ! -f ~/.config/keypilot/config.json ]; then
+    cp config.example.json ~/.config/keypilot/config.json
+fi
+
 # Add user to input group
 sudo usermod -aG input "$USER"
 
